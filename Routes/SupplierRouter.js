@@ -24,7 +24,7 @@ supplierRouter.get(
       res.json(supplier);
     } else {
       res.status(404);
-      throw new Error('Supplier not found');
+      throw new Error('Proveedor no encontrado');
     }
   })
 );
@@ -69,7 +69,7 @@ supplierRouter.put(
       res.json(updatedSupplier);
     } else {
       res.status(404);
-      throw new Error('Supplier not found');
+      throw new Error('Proveedor no encontrado');
     }
   })
 );
@@ -83,10 +83,10 @@ supplierRouter.delete(
     const supplier = await Supplier.findById(req.params.id);
     if (supplier) {
       await supplier.remove();
-      res.json({ message: 'Supplier deleted' });
+      res.json({ message: 'Proveedor eliminado' });
     } else {
       res.status(404);
-      throw new Error('Supplier not found');
+      throw new Error('Proveedor no encontrado');
     }
   })
 );
