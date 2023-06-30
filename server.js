@@ -8,6 +8,8 @@ import userRouter from './Routes/UserRoutes.js';
 import orderRouter from './Routes/orderRoutes.js';
 import categoryRouter from './Routes/CategoryRouter.js';
 import supplierRouter from './Routes/SupplierRouter.js';
+import purchaseRouter from './Routes/PurchaseRoutes.js';
+import saleRouter from './Routes/SaleRoutes.js';
 
 dotenv.config();
 connectDatabase();
@@ -21,6 +23,10 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/suppliers', supplierRouter);
+app.use('/api/purchases', purchaseRouter);
+app.use('/api/sales', saleRouter);
+
+// PAYPAL
 app.get('/api/config/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID);
 });
