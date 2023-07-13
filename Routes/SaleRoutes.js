@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { protect, admin } from '../Middleware/AuthMiddleware.js';
 import Sale from './../Models/SaleModel.js';
+import Product from './../Models/ProductModel.js';
 
 const saleRouter = express.Router();
 
@@ -15,7 +16,12 @@ saleRouter.get(
       .populate('products.product', 'id name') // Poblar el campo 'products.product'
       .exec();
 
-    res.json(sales);
+    res.json(
+      sales.map((sale) => ({
+        ...sale.toObject(),
+        customerName: sale.customerName,
+      }))
+    );
   })
 );
 
@@ -24,14 +30,23 @@ saleRouter.post(
   '/',
   protect,
   asyncHandler(async (req, res) => {
-    const { products, totalAmount } = req.body;
+    const { customerName, products, totalAmount } = req.body;
 
     const sale = new Sale({
+      customerName,
       products,
       totalAmount,
     });
 
     const createdSale = await sale.save();
+
+    // Update the stock of each product
+    createdSale.products.forEach(async (product) => {
+      const productToUpdate = await Product.findById(product.product);
+      productToUpdate.countInStock -= product.quantity;
+      await productToUpdate.save();
+    });
+
     res.status(201).json(createdSale);
   })
 );
